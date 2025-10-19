@@ -35,7 +35,7 @@ export const stripeWebHooks=async(req,res)=>{
                  }  
 
                  default:
-                    console.log('')
+                    console.log('errrrr')
                     break;
          }
 

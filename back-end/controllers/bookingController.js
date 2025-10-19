@@ -3,6 +3,8 @@ import Show from "../models/Show.js";
 import Booking from "../models/Booking.js"
 
 import stripe from 'stripe';
+import { inngest } from "../inngest/inngest.js";
+
 
 
 const checkSeatsAvailability = async (showId, selectedSeats) => {
@@ -89,12 +91,22 @@ export const createBooking = async (req, res) => {
       metadata: {
         bookingId: booking._id.toString()
       },
-      expires_at:Math.floor(Date.now()/1000) + 30 * 60  //expires in 30 Minutes
+      expires_at:Math.floor(Date.now()/1000) + 50 * 60  //expires in 30 Minutes
     })
 
 
     booking.paymentLink=session.url;
     await booking.save();
+
+    //run inngest function after 10 min to check payment failed or not
+    await inngest.send({
+      name:"app/checkpayment",
+      data:{
+        bookingId:booking._id.toString()
+      }
+    })
+
+
 
     res.status(200).json({
       success: true,

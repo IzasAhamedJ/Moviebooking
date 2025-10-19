@@ -6,6 +6,7 @@ import Blur from '../components/Blur'
 import { convertMinutesToHMS } from '../libraries/convertHours'
 import dateFormat from '../libraries/dateFomat'
 import { useAppContext } from '../context/AppContext'
+import { Link } from 'react-router-dom'
 
 
 function MyBookings() {
@@ -72,8 +73,8 @@ function MyBookings() {
                             <div className='flex flex-col md:items-end md:text-right justify-between p-4'>
                                     <div className='flex items-center gap-4'>
                                          <p className='text-2xl font-semibold mb-3'>{currency}{data.amount}</p>
-                                         {!data.isPaid && !data.paymentLink &&
-                                         <button className='bg-pink-500 text-sm px-4 py-1.5 mb-3 rounded-sm font-medium cursor-pointer'>Pay Now</button>}
+                                         {!data.isPaid &&
+                                         <Link to={data.paymentLink} className='bg-pink-500 text-sm px-4 py-1.5 mb-3 rounded-sm font-medium cursor-pointer'>Pay Now</Link>}
                                     </div>
                                     <div className='text-sm'>
                                         <p><span className='text-gray-400'>Total Tickets:</span>{data.bookedSeats.length}</p>
