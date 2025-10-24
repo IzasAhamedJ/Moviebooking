@@ -2,7 +2,7 @@ import { Inngest } from "inngest";
 import  user  from "../models/User.js";
 import Booking from "../models/Booking.js";
 import Show from "../models/Show.js";
-
+import sendEmail from "../config/nodeMailer.js";
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "show-booking" });
 
@@ -106,10 +106,42 @@ async ({event,step})=>{
 }
 )
 
+
+//send email to user after succsessfull pyment
+
+const sendBookingConfirmationEmail=inngest.createFunction({
+    id:"send-booking-confirmation-email"
+},
+{
+    event:"app/show.booked"
+},
+async({event,step})=>{
+   const {bookingId}=event.data;
+
+   const booking=await booking.findById(bookingId).populate({
+    path:'show',
+    populate:{
+        path:"movie",
+        model:"Movie"
+
+    }
+   }).populate('user')
+
+  await sendEmail({
+    to:booking.user.email,
+    subject:`Payment Confirmation for ${booking.show.movie.title} booked`,
+    body:`<h1>Enjoy the Show</h1>`
+  })
+
+
+}
+)
+
 // Create an empty array where we'll export future Inngest functions
 export const functions = [
     UserCreation,
     UserDeletion,
     UserUpdation,
-    releaseSeatsAndDeleteBooking
+    releaseSeatsAndDeleteBooking,
+    sendBookingConfirmationEmail
 ];
