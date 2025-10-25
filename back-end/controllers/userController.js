@@ -5,8 +5,7 @@ import Movie from "../models/Movie.js";
 export const getUserBookings=async(req,res)=>{
    try {
       const {userId}=req.auth();
-      console.log('userid ',userId)
-
+     
 
       const userBookingData=await Booking.find({
         user:userId
